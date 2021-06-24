@@ -1,4 +1,4 @@
-package com.example.tacocloud;
+package com.example.tacocloud.web;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -14,7 +14,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(HomeController.class)   // <1> 注册到Spring MVC的应用上下文执行
+//@WebMvcTest(HomeController.class)   // <1> 注册到Spring MVC的应用上下文执行
+@WebMvcTest(WebConfig.class)
 public class HomeControllerTest {
 
   @Autowired
