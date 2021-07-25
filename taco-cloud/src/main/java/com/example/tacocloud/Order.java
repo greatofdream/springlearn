@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
@@ -38,6 +39,9 @@ public class Order {
   //tag::allButValidation[]
   private String deliveryStreet;
   //end::allButValidation[]
+
+  @ManyToOne
+  private User user;
 
   @NotBlank(message="City is required")
   //tag::allButValidation[]

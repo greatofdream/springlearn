@@ -1,5 +1,6 @@
 package com.example.tacocloud.web;
 import java.util.Arrays;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,8 +22,10 @@ import com.example.tacocloud.Ingredient;
 import com.example.tacocloud.Ingredient.Type;
 import com.example.tacocloud.Taco;
 import com.example.tacocloud.Order;
+import com.example.tacocloud.User;
 import com.example.tacocloud.data.IngredientRepository;
 import com.example.tacocloud.data.TacoRepository;
+import com.example.tacocloud.data.UserRepository;
 
 // simple logging facade for java
 @Slf4j
@@ -33,10 +36,12 @@ public class DesignTacoController {
 
   private final IngredientRepository ingredientRepo;
   private TacoRepository designRepo;
+  private UserRepository userRepo;
   @Autowired
-  public DesignTacoController(IngredientRepository ingredientRepo, TacoRepository designRepo){
+  public DesignTacoController(IngredientRepository ingredientRepo, TacoRepository designRepo, UserRepository userRepo){
     this.ingredientRepo = ingredientRepo;
     this.designRepo = designRepo;
+    this.userRepo = userRepo;
   }
 //end::head[]
   @ModelAttribute(name="order")
@@ -70,8 +75,10 @@ public void addIngredientsToModel(Model model) {
 }
 
 //tag::showDesignForm[]
+// need add principal
   @GetMapping
-  public String showDesignForm(Model model) {
+  public String showDesignForm(Model model, Principal principal){
+  //public String showDesignForm(Model model) {
     List<Ingredient> ingredients = new ArrayList<>();
     ingredientRepo.findAll().forEach(i->ingredients.add(i));
     Type[] types = Ingredient.Type.values();
@@ -80,6 +87,9 @@ public void addIngredientsToModel(Model model) {
           filterByType(ingredients, type));
     }
     // model.addAttribute("design", new Taco());
+    String username = principal.getName();
+    User user = userRepo.findByUsername(username);
+    model.addAttribute("user", user);
     return "design";
   }
 
