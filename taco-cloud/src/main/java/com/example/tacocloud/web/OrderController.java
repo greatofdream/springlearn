@@ -1,6 +1,8 @@
 package com.example.tacocloud.web;
 import javax.validation.Valid;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,8 +27,11 @@ import com.example.tacocloud.data.OrderRepository;
 @SessionAttributes("order")
 public class OrderController {
   private OrderRepository orderRepo;
-  public OrderController(OrderRepository orderRepo) {
+
+  private OrderProps props;
+  public OrderController(OrderRepository orderRepo, OrderProps props) {
     this.orderRepo = orderRepo;
+    this.props = props;
   }
 //end::baseClass[]
 //tag::orderForm[]
@@ -99,7 +104,16 @@ public class OrderController {
     return "redirect:/";
   }
 //end::handlePostWithValidation[]
-  
+  @GetMapping
+  public String ordersForUser(
+      @AuthenticationPrincipal User user, Model model) {
+
+    Pageable pageable = PageRequest.of(0, props.getPageSize());
+    model.addAttribute("orders",
+        orderRepo.findByUserOrderByPlacedAtDesc(user, pageable));
+
+    return "orderList";
+  }
 //tag::baseClass[]
   
 }
